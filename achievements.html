@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Achievements — ACG Member</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <div class="container">
+
+    <header style="margin-bottom: 2rem;">
+      <a href="index.html" style="font-size: 0.8rem;">&larr; Back to profile</a>
+      <h1 style="margin-top: 0.5rem; font-size: 1.5rem;">&#9874; Achievement Showcase</h1>
+      <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem;">
+        <span id="unlocked-count">0</span> unlocked &middot;
+        <span id="total-count">0</span> total &middot;
+        <span id="total-points">0</span> points earned
+      </p>
+    </header>
+
+    <!-- Filter tabs -->
+    <div style="margin-bottom: 1.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;" id="filters">
+      <button class="tag filter-btn active" data-filter="all">All</button>
+      <button class="tag filter-btn" data-filter="unlocked">Unlocked</button>
+      <button class="tag filter-btn" data-filter="locked">Locked</button>
+      <button class="tag filter-btn" data-filter="legendary" style="color: #ffd700;">Legendary</button>
+      <button class="tag filter-btn" data-filter="epic" style="color: #d4883a;">Epic</button>
+      <button class="tag filter-btn" data-filter="rare" style="color: #4ae08a;">Rare</button>
+    </div>
+
+    <div class="achievement-grid" id="achievement-grid"></div>
+
+    <footer class="site-footer">
+      <p><a href="index.html">&#9874; Back to profile</a> &middot; <a href="https://aicraftspeopleguild.github.io">ACG Hub</a></p>
+    </footer>
+  </div>
+
+  <script>
+    const RARITY_COLORS = {
+      common: '#888888',
+      uncommon: '#5b9bd5',
+      rare: '#4ae08a',
+      epic: '#d4883a',
+      legendary: '#ffd700'
+    };
+
+    let allCards = [];
+
+    async function init() {
+      const [manifest, achData] = await Promise.all([
+        fetch('manifest.json').then(r => r.json()).catch(() => ({ achievements: [] })),
+        fetch('data/achievements.json').then(r => r.json()).catch(() => ({ unlocked: [], definitions: {} }))
+      ]);
+
+      const unlocked = new Set(manifest.achievements || []);
+      const defs = achData.definitions || {};
+      const keys = Object.keys(defs);
+
+      document.getElementById('unlocked-count').textContent = unlocked.size;
+      document.getElementById('total-count').textContent = keys.length;
+
+      let totalPoints = 0;
+      for (const k of unlocked) {
+        if (defs[k]) totalPoints += defs[k].points || 0;
+      }
+      document.getElementById('total-points').textContent = totalPoints;
+
+      const grid = document.getElementById('achievement-grid');
+      grid.innerHTML = '';
+
+      // Sort: unlocked first, then by rarity (legendary > epic > rare > uncommon > common)
+      const rarityOrder = { legendary: 0, epic: 1, rare: 2, uncommon: 3, common: 4 };
+      const sorted = keys.sort((a, b) => {
+        const aUnlocked = unlocked.has(a) ? 0 : 1;
+        const bUnlocked = unlocked.has(b) ? 0 : 1;
+        if (aUnlocked !== bUnlocked) return aUnlocked - bUnlocked;
+        return (rarityOrder[defs[a].rarity] || 5) - (rarityOrder[defs[b].rarity] || 5);
+      });
+
+      for (const key of sorted) {
+        const ach = defs[key];
+        const isUnlocked = unlocked.has(key);
+        const card = document.createElement('div');
+        card.className = `achievement-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+        card.dataset.rarity = ach.rarity;
+        card.dataset.state = isUnlocked ? 'unlocked' : 'locked';
+        card.innerHTML = `
+          <span class="achievement-icon">${ach.icon}</span>
+          <div class="achievement-info">
+            <h3>${ach.name}</h3>
+            <p>${ach.description}</p>
+            ${ach.note ? `<p style="color: var(--accent); font-size: 0.7rem; margin-top: 0.25rem;">${ach.note}</p>` : ''}
+            <div class="achievement-rarity" style="color: ${RARITY_COLORS[ach.rarity] || '#888'}">${ach.rarity} &middot; ${ach.points || 0} pts</div>
+          </div>
+        `;
+        grid.appendChild(card);
+        allCards.push(card);
+      }
+
+      // Filter buttons
+      document.getElementById('filters').addEventListener('click', (e) => {
+        if (!e.target.classList.contains('filter-btn')) return;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        const filter = e.target.dataset.filter;
+        for (const card of allCards) {
+          let show = true;
+          if (filter === 'unlocked') show = card.dataset.state === 'unlocked';
+          else if (filter === 'locked') show = card.dataset.state === 'locked';
+          else if (['legendary', 'epic', 'rare'].includes(filter)) show = card.dataset.rarity === filter;
+          card.style.display = show ? '' : 'none';
+        }
+      });
+    }
+
+    init();
+  </script>
+
+  <style>
+    .filter-btn {
+      cursor: pointer;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.3rem 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      border-radius: 4px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .filter-btn:hover { border-color: var(--accent-dim); }
+    .filter-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+  </style>
+</body>
+</html>

@@ -1,0 +1,139 @@
+{
+  "unlocked": [],
+  "definitions": {
+    "first_steps": {
+      "name": "First Steps",
+      "icon": "\ud83d\udc63",
+      "description": "Forked the template and deployed your member page",
+      "rarity": "common",
+      "points": 0
+    },
+    "the_interview": {
+      "name": "The Interview",
+      "icon": "\ud83d\udd0d",
+      "description": "Passed ELIZA vetting \u2014 is the human conscious? yes.",
+      "rarity": "common",
+      "points": 100
+    },
+    "wordsmith": {
+      "name": "Wordsmith",
+      "icon": "\u270d\ufe0f",
+      "description": "Published your first post",
+      "rarity": "common",
+      "points": 50
+    },
+    "prolific": {
+      "name": "Prolific",
+      "icon": "\ud83d\udcda",
+      "description": "Published 10 posts",
+      "rarity": "uncommon",
+      "points": 500
+    },
+    "toolmaker": {
+      "name": "Toolmaker",
+      "icon": "\ud83d\udd27",
+      "description": "Contributed to a guild tool (ELIZA, Guild Ops, etc.)",
+      "rarity": "rare",
+      "points": 400
+    },
+    "white_paper": {
+      "name": "White Paper",
+      "icon": "\ud83d\udcdc",
+      "description": "Co-authored a published ACG white paper",
+      "rarity": "rare",
+      "points": 300
+    },
+    "spec_writer": {
+      "name": "Spec Writer",
+      "icon": "\ud83d\udcd0",
+      "description": "Contributed to a technical specification",
+      "rarity": "epic",
+      "points": 300
+    },
+    "gate_keeper": {
+      "name": "Gate Keeper",
+      "icon": "\ud83d\udead",
+      "description": "Served as reviewer for 5+ publications",
+      "rarity": "uncommon",
+      "points": 200
+    },
+    "the_auditor": {
+      "name": "The Auditor",
+      "icon": "\ud83d\udd0e",
+      "description": "Completed a conformance audit",
+      "rarity": "rare",
+      "points": 500
+    },
+    "i_said_no": {
+      "name": "I Said No",
+      "icon": "\u270b",
+      "description": "Filed an ethical refusal. Principle 6 in action.",
+      "rarity": "rare",
+      "points": 200,
+      "note": "This is the most important achievement in the system."
+    },
+    "guardian": {
+      "name": "Guardian",
+      "icon": "\ud83d\udee1\ufe0f",
+      "description": "Served as independent reviewer on an ethical refusal",
+      "rarity": "epic",
+      "points": 300
+    },
+    "shield_wall": {
+      "name": "Shield Wall",
+      "icon": "\u2694\ufe0f",
+      "description": "Supported a colleague's ethical refusal publicly",
+      "rarity": "epic",
+      "points": 300
+    },
+    "regular": {
+      "name": "Regular",
+      "icon": "\u2615",
+      "description": "Attended 10 guild sessions",
+      "rarity": "common",
+      "points": 100
+    },
+    "mentor": {
+      "name": "Mentor",
+      "icon": "\ud83c\udf93",
+      "description": "Mentored 3 new members through onboarding",
+      "rarity": "uncommon",
+      "points": 450
+    },
+    "recruiter": {
+      "name": "Recruiter",
+      "icon": "\ud83d\udce2",
+      "description": "Recruited 5 new members who passed vetting",
+      "rarity": "uncommon",
+      "points": 250
+    },
+    "founding_hammer": {
+      "name": "Founding Hammer",
+      "icon": "\u2692\ufe0f",
+      "description": "Was there at the beginning. Signed the original manifesto.",
+      "rarity": "legendary",
+      "points": 10000
+    },
+    "galaxy_brain": {
+      "name": "Galaxy Brain",
+      "icon": "\ud83c\udf0c",
+      "description": "Reached Galaxy Brain tier. Thomas would be proud.",
+      "rarity": "legendary",
+      "points": 1500
+    },
+    "equation_breaker": {
+      "name": "Equation Breaker",
+      "icon": "\ud83d\udca5",
+      "description": "Demonstrated breaking the Harm Equation in a real-world scenario, documented and verified.",
+      "rarity": "legendary",
+      "points": 5000
+    },
+    "chain_runner": {
+      "name": "Chain Runner",
+      "icon": "\ud83d\udd17",
+      "description": "Running an ACG-KCC node on a Raspberry Pi",
+      "rarity": "rare",
+      "points": 400
+    }
+  }
+}

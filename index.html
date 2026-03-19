@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACG Member</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <div class="container">
+
+    <!-- Offline Banner -->
+    <div class="offline-banner" id="offline-banner">
+      Hub unreachable — showing cached data.
+    </div>
+
+    <!-- Profile Header -->
+    <header class="profile-header">
+      <img class="profile-avatar" id="avatar" src="assets/avatar.png" alt="Member avatar">
+      <div class="profile-info">
+        <div class="profile-badge" id="guild-badge">&#9874; ACG MEMBER</div>
+        <h1 class="profile-handle" id="handle">Loading...</h1>
+        <p class="profile-tagline" id="tagline"></p>
+        <span class="brain-tier" id="brain-tier"></span>
+      </div>
+    </header>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar" id="stats-bar">
+      <div class="stat-card">
+        <div class="stat-value" id="stat-rank">—</div>
+        <div class="stat-label">Guild Rank</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-contributions">0</div>
+        <div class="stat-label">Contributions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-publications">0</div>
+        <div class="stat-label">Publications</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-achievements">0</div>
+        <div class="stat-label">Achievements</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-sessions">0</div>
+        <div class="stat-label">Sessions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-joined">—</div>
+        <div class="stat-label">Member Since</div>
+      </div>
+    </div>
+
+    <!-- Achievements Section -->
+    <section class="section">
+      <h2 class="section-title">Achievements</h2>
+      <div class="achievement-grid" id="achievement-grid">
+        <!-- Populated by JS -->
+      </div>
+      <p style="margin-top: 0.75rem; text-align: right;">
+        <a href="achievements.html">View all achievements &rarr;</a>
+      </p>
+    </section>
+
+    <!-- Content Feed -->
+    <section class="section">
+      <h2 class="section-title">Latest Content</h2>
+      <ul class="content-list" id="content-feed">
+        <li class="content-item">
+          <p class="loading">No posts yet. Add markdown files to content/posts/ to get started.</p>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Network Widget -->
+    <section class="section">
+      <h2 class="section-title">Guild Network</h2>
+      <div class="network-widget" id="network-widget">
+        <div class="network-stats" id="network-stats">
+          <div class="network-stat">
+            <div class="network-stat-value" id="net-members">—</div>
+            <div class="network-stat-label">Members</div>
+          </div>
+          <div class="network-stat">
+            <div class="network-stat-value" id="net-posts">—</div>
+            <div class="network-stat-label">Posts</div>
+          </div>
+          <div class="network-stat">
+            <div class="network-stat-value" id="net-achievements">—</div>
+            <div class="network-stat-label">Achievements</div>
+          </div>
+          <div class="network-stat">
+            <div class="network-stat-value" id="net-refusals">—</div>
+            <div class="network-stat-label">Refusals Protected</div>
+          </div>
+        </div>
+        <h3 style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">FELLOW MEMBERS</h3>
+        <ul class="member-list" id="member-list">
+          <li class="loading">Fetching guild network...</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <p class="manifesto-quote" id="manifesto-quote">
+        "We are craftspeople who chose to build with purpose and integrity."
+      </p>
+      <p>
+        <a href="https://aicraftspeopleguild.github.io">&#9874; ACG Hub</a>
+        &middot; Powered by the <a href="https://github.com/AICraftspeopleGuild">AI Craftspeople Guild</a>
+      </p>
+    </footer>
+
+  </div>
+
+  <script>
+    // ================================================================
+    // ACG MEMBER PAGE — CLIENT-SIDE LOGIC
+    // Reads manifest.json (local) and network.json (from hub)
+    // ================================================================
+
+    // CONFIGURE: Set your GitHub username here (or leave as-is to auto-detect)
+    const MY_GITHUB = null; // e.g., "ThomasTheTankEngineer" — set in manifest.json instead
+    const HUB_URL = 'https://aicraftspeopleguild.github.io';
+
+    // Manifesto quotes for rotating footer
+    const MANIFESTO_QUOTES = [
+      "We are craftspeople who chose to build with purpose and integrity.",
+      "The guild site is a hub, not a host. Your page is yours. The network is ours.",
+      "Technology must serve human flourishing, not merely corporate efficiency.",
+      "Ethical refusal is not insubordination — it is professional duty.",
+      "We do not trade safety for speed, or integrity for profit.",
+      "Code is a craft. Ethics is not optional."
+    ];
+
+    // Brain tier definitions
+    const BRAIN_TIERS = [
+      { name: 'Smooth Brain', emoji: '\uD83E\uDDE0', color: '#888888', minPoints: 0 },
+      { name: 'Wrinkled Brain', emoji: '\uD83E\uDDE0\u2728', color: '#5b9bd5', minPoints: 100 },
+      { name: 'Big Brain', emoji: '\uD83E\uDDE0\uD83D\uDD25', color: '#4ae08a', minPoints: 500 },
+      { name: 'Galaxy Brain', emoji: '\uD83E\uDDE0\uD83C\uDF0C', color: '#d4883a', minPoints: 1500 },
+      { name: 'Cosmic Brain', emoji: '\uD83E\uDDE0\uD83E\uDE90', color: '#aa44ff', minPoints: 5000 },
+      { name: 'Transcendent Brain', emoji: '\uD83E\uDDE0\u26A1', color: '#ffd700', minPoints: 10000 }
+    ];
+
+    function getBrainTier(points) {
+      let tier = BRAIN_TIERS[0];
+      for (const t of BRAIN_TIERS) {
+        if (points >= t.minPoints) tier = t;
+      }
+      return tier;
+    }
+
+    function computePoints(stats) {
+      return (stats.sessions_attended || 0) * 10
+        + (stats.vettings_passed || 0) * 100
+        + (stats.publications || 0) * 50
+        + (stats.contributions || 0) * 100
+        + (stats.refusals_filed || 0) * 200
+        + (stats.audits_served || 0) * 500;
+    }
+
+    // Load local manifest
+    async function loadManifest() {
+      try {
+        const res = await fetch('manifest.json');
+        return await res.json();
+      } catch (e) {
+        console.error('Failed to load manifest.json', e);
+        return null;
+      }
+    }
+
+    // Load achievements definitions
+    async function loadAchievements() {
+      try {
+        const res = await fetch('data/achievements.json');
+        return await res.json();
+      } catch (e) {
+        return { unlocked: [], definitions: {} };
+      }
+    }
+
+    // Load network data from hub
+    async function loadNetwork() {
+      try {
+        const res = await fetch(`${HUB_URL}/data/network.json`);
+        return await res.json();
+      } catch (e) {
+        console.warn('Hub unreachable', e);
+        return null;
+      }
+    }
+
+    function renderProfile(manifest) {
+      const m = manifest.member;
+      document.getElementById('handle').textContent = m.handle;
+      document.getElementById('tagline').textContent = m.tagline;
+      document.getElementById('stat-joined').textContent = m.joined;
+      if (m.avatar_url) {
+        document.getElementById('avatar').src = m.avatar_url;
+      }
+
+      // Stats
+      const s = manifest.stats;
+      document.getElementById('stat-contributions').textContent = s.contributions;
+      document.getElementById('stat-publications').textContent = s.publications;
+      document.getElementById('stat-achievements').textContent = manifest.achievements.length;
+      document.getElementById('stat-sessions').textContent = s.sessions_attended;
+
+      // Brain tier
+      const points = computePoints(s);
+      const tier = getBrainTier(points);
+      const tierEl = document.getElementById('brain-tier');
+      tierEl.textContent = `${tier.emoji} ${tier.name} (${points} pts)`;
+      tierEl.style.color = tier.color;
+      tierEl.style.borderColor = tier.color;
+
+      document.title = `${m.handle} — ACG Member`;
+    }
+
+    function renderAchievements(manifest, achData) {
+      const grid = document.getElementById('achievement-grid');
+      grid.innerHTML = '';
+      const unlocked = new Set(manifest.achievements || []);
+      const defs = achData.definitions || {};
+
+      const rarityColors = {
+        common: '#888888',
+        uncommon: '#5b9bd5',
+        rare: '#4ae08a',
+        epic: '#d4883a',
+        legendary: '#ffd700'
+      };
+
+      // Show unlocked first, then a few locked
+      const keys = Object.keys(defs);
+      const unlockedKeys = keys.filter(k => unlocked.has(k));
+      const lockedKeys = keys.filter(k => !unlocked.has(k));
+      const display = [...unlockedKeys, ...lockedKeys.slice(0, 6)];
+
+      for (const key of display) {
+        const ach = defs[key];
+        const isUnlocked = unlocked.has(key);
+        const card = document.createElement('div');
+        card.className = `achievement-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+        card.innerHTML = `
+          <span class="achievement-icon">${ach.icon}</span>
+          <div class="achievement-info">
+            <h3>${ach.name}</h3>
+            <p>${ach.description}</p>
+            <div class="achievement-rarity" style="color: ${rarityColors[ach.rarity] || '#888'}">${ach.rarity}</div>
+          </div>
+        `;
+        grid.appendChild(card);
+      }
+    }
+
+    function renderContent(manifest) {
+      const feed = document.getElementById('content-feed');
+      const posts = manifest.content.posts || [];
+      const projects = manifest.content.projects || [];
+      const all = [
+        ...posts.map(p => ({ ...p, type: 'post' })),
+        ...projects.map(p => ({ ...p, type: 'project' }))
+      ].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+
+      if (all.length === 0) return;
+
+      feed.innerHTML = '';
+      for (const item of all.slice(0, 10)) {
+        const li = document.createElement('li');
+        li.className = 'content-item';
+        li.innerHTML = `
+          <div class="content-item-title">
+            ${item.url ? `<a href="${item.url}">${item.title}</a>` : item.title}
+            <span class="tag">${item.type}</span>
+          </div>
+          <div class="content-item-meta">${item.date || ''}</div>
+          ${item.excerpt ? `<p class="content-item-excerpt">${item.excerpt}</p>` : ''}
+        `;
+        feed.appendChild(li);
+      }
+    }
+
+    function renderNetwork(network, manifest) {
+      if (!network) {
+        document.getElementById('offline-banner').style.display = 'block';
+        document.getElementById('member-list').innerHTML = '<li class="loading">Hub offline — network data unavailable.</li>';
+        return;
+      }
+
+      const members = network.members || [];
+      const myGithub = manifest.member.github;
+
+      // Network stats
+      document.getElementById('net-members').textContent = members.length;
+      document.getElementById('net-posts').textContent = members.reduce((s, m) => s + (m.stats?.publications || 0), 0);
+      document.getElementById('net-achievements').textContent = members.reduce((s, m) => s + (m.achievements?.length || 0), 0);
+      document.getElementById('net-refusals').textContent = members.reduce((s, m) => s + (m.stats?.refusals_filed || 0), 0);
+
+      // Find my rank
+      const sorted = [...members].sort((a, b) => computePoints(b.stats || {}) - computePoints(a.stats || {}));
+      const myIndex = sorted.findIndex(m => m.github === myGithub);
+      if (myIndex >= 0) {
+        document.getElementById('stat-rank').textContent = `#${myIndex + 1}`;
+      }
+
+      // Member list (top 10)
+      const list = document.getElementById('member-list');
+      list.innerHTML = '';
+      for (const m of sorted.slice(0, 10)) {
+        const tier = getBrainTier(computePoints(m.stats || {}));
+        const li = document.createElement('li');
+        li.innerHTML = `${tier.emoji} <a href="${m.site_url}">${m.handle}</a> <span style="color:var(--text-muted)">${computePoints(m.stats || {})} pts</span>`;
+        list.appendChild(li);
+      }
+    }
+
+    // Rotate manifesto quote
+    function setRandomQuote() {
+      const el = document.getElementById('manifesto-quote');
+      el.textContent = `"${MANIFESTO_QUOTES[Math.floor(Math.random() * MANIFESTO_QUOTES.length)]}"`;
+    }
+
+    // Init
+    (async function init() {
+      setRandomQuote();
+
+      const [manifest, achData, network] = await Promise.all([
+        loadManifest(),
+        loadAchievements(),
+        loadNetwork()
+      ]);
+
+      if (manifest) {
+        renderProfile(manifest);
+        renderAchievements(manifest, achData);
+        renderContent(manifest);
+        renderNetwork(network, manifest);
+      }
+    })();
+  </script>
+</body>
+</html>

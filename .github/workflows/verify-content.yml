@@ -1,0 +1,23 @@
+name: Verify Content
+
+on:
+  pull_request:
+    paths:
+      - 'content/**'
+      - 'manifest.json'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate manifest schema
+        run: node scripts/validate-manifest.js
+
+      - name: Validate content frontmatter
+        run: node scripts/validate-content.js
