@@ -1,12 +1,12 @@
 {
   "acg_protocol": "ACG-DISCOVER-v1",
   "member": {
-    "handle": "YourHandle",
-    "github": "YourGitHubUsername",
-    "joined": "2026-01-01",
-    "tagline": "your tagline here",
+    "handle": "Nicolas Rosado",
+    "github": "nicolasrosado",
+    "joined": "2026-03-31",
+    "tagline": "it's better to have five teammates working as a team than one team with five people working in isolation",
     "avatar_url": "./assets/avatar.png",
-    "site_url": "https://yourgithubusername.github.io/ACG_Repo_Template/"
+    "site_url": "https://nicolasrosado.github.io/acg-member/"
   },
   "achievements": [],
   "stats": {
